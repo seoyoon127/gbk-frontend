@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import styled from 'styled-components';
 import ImgUpload from "./이미지 업로드.png"
+import { Link } from 'react-router-dom';
 
 const PlanContainer = styled.div`
     width: 80%;
@@ -18,10 +19,8 @@ const Img = styled.img`
     height: 300px;
     object-fit: contain;
     cursor: pointer;
-    border: red 1px solid;
 `;
 const Text = styled.div`
-    margin-left: 100px;
     > div {
         margin: 15px 0;
     }
@@ -34,8 +33,19 @@ const Text = styled.div`
         font-size: 16px;
     }
 `;
-
-function PlanRoom() {
+const Calendar=styled.div`
+    margin-left:5%;
+`
+const NextButton=styled.button`
+    margin-top:3%;
+    width:80%; height:40px;
+    text-align:center;
+    border-radius: 10px;
+    .link{
+        text-decoration: none;
+    }
+`
+function PlanRoom1() {
     const [image, setImage] = useState(ImgUpload);
     const fileInputRef = useRef(null);
 
@@ -48,7 +58,7 @@ function PlanRoom() {
 
     return (
         <PlanContainer>
-            <h1>국내 여행 계획하기</h1>
+            <h1>여행 계획방 만들기 (1/2)</h1>
             <PlanTop>
                 <div>
                     <div>대표 이미지</div><br />
@@ -72,18 +82,21 @@ function PlanRoom() {
                         onChange={handleImageUpload}
                     />
                 </div>
+                <Calendar>
+                    <div>여행 기간</div>
+                </Calendar>
+            </PlanTop>
+            <PlanBottom>
                 <Text>
                     <div>여행 제목</div>
                     <input type="text" />
                     <div>여행 설명</div>
                     <textarea cols="60" rows="10"/>
                 </Text>
-            </PlanTop>
-            <PlanBottom>
-                <div>여행 기간</div>
             </PlanBottom>
+            <NextButton><Link className="link" to="/Planroom2">다음으로&gt;</Link></NextButton>
         </PlanContainer>
     );
 }
 
-export default PlanRoom;
+export default PlanRoom1;

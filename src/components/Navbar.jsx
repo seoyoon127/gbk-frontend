@@ -53,7 +53,7 @@ function Navbar(){
                         <li><Link className="link" to='/Home'>홈</Link></li>
                         <li><Link className="link" to='/MyPage'>마이페이지</Link></li>
                         <li><Link className="link" to='/LogIn'>로그인</Link></li>
-                        <li><Link className="link" to='/PlanRoom'>여행 계획하기</Link></li>
+                        <li><Link className="link" to='/PlanRoom1'>여행 계획하기</Link></li>
                     </ul>
                 </NavbarRight>
             </NavbarWrap>
