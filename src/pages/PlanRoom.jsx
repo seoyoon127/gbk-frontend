@@ -6,6 +6,7 @@ import TimePicker from 'react-time-picker';
 import 'react-calendar/dist/Calendar.css';
 import 'react-time-picker/dist/TimePicker.css';
 import { format } from 'date-fns';
+import moment from 'moment'; // moment 라이브러리 임포트
 
 const PlanContainer = styled.div`
   width: 80%;
@@ -47,8 +48,33 @@ const PlanBottom = styled.div`
   margin: auto;
 `;
 
+/* 캘린더 */
 const CalendarContainer = styled.div`
   margin-bottom: 20px;
+`;
+
+const StyledCalendar = styled(Calendar)`
+  border: none; /* 경계선 제거 */
+  border-radius: 10px; /* 모서리 둥글게 */
+  background-color: #f9f9f9; /* 배경 색상 */
+  padding: 10px; /* 여백 추가 */
+
+  .react-calendar__month-view__weekdays {
+    display: none; /* 요일 헤더 숨기기 */
+  }
+
+  .react-calendar__month-view__weekdays__weekday {
+    display: none; /* 요일 제목의 스타일을 비우기 */
+  }
+
+  .react-calendar__tile--now {
+    border: 2px solid #4caf50; /* 오늘 날짜 스타일 */
+  }
+
+  .react-calendar__tile--active {
+    background: #45a049; /* 오늘 날짜의 배경 색상 */
+    color: white;
+  }
 `;
 
 const Title = styled.h1`
@@ -74,6 +100,7 @@ const Separator = styled.div`
   margin: 0 10px;
 `;
 
+/* 시간설정 */
 const TimeDisplay = styled.div`
   display: flex;
   align-items: center;
@@ -100,13 +127,52 @@ const StyledTimePicker = styled(TimePicker)`
   }
 `;
 
+/* 토글 스위치 */
+const ToggleLabel = styled.label`
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+`;
+
+const ToggleSwitch = styled.input`
+  appearance: none;
+  width: 34px;
+  height: 20px;
+  background: #ccc;
+  border-radius: 20px;
+  position: relative;
+  outline: none;
+  cursor: pointer;
+
+  &:checked {
+    background: #4caf50;
+  }
+
+  &:checked::before {
+    transform: translateX(14px);
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: white;
+    top: 2px;
+    left: 2px;
+    transition: transform 0.2s ease;
+  }
+`;
+
 function PlanRoom() {
   const [image, setImage] = useState(ImgUpload);
+  const fileInputRef = useRef(null);
   const [dateRange, setDateRange] = useState([new Date(), new Date()]);
   const [startDate, endDate] = dateRange;
   const [startTime, setStartTime] = useState('00:00');
   const [endTime, setEndTime] = useState('00:00');
-  const fileInputRef = useRef(null);
+  const [showTime, setShowTime] = useState(false);
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
@@ -117,6 +183,10 @@ function PlanRoom() {
 
   const onDateChange = (range) => {
     setDateRange(range);
+  };
+
+  const handleToggleChange = () => {
+    setShowTime(!showTime);
   };
 
   return (
@@ -161,28 +231,45 @@ function PlanRoom() {
           <DateText>{format(endDate, 'yyyy/MM/dd')}</DateText>
         </DateDisplay>
         <CalendarContainer>
-          <Calendar
+          <StyledCalendar
             selectRange={true}
             onChange={onDateChange}
             value={dateRange}
+            calendarType="gregory"
+            showNeighboringMonth={false}
+            next2Label={null}
+            prev2Label={null}
+            minDetail="year"
+            formatDay={(locale, date) => moment(date).format('D')} // 일 제거 숫자만 보이게
+            formatYear={(locale, date) => moment(date).format('YYYY')} // 네비게이션 눌렀을때 숫자 년도만 보이게
+            formatMonthYear={(locale, date) => moment(date).format('YYYY. MM')} // 네비게이션에서 2023. 12 이렇게 보이도록 설정
           />
         </CalendarContainer>
-        <div>시간 설정</div>
-        <TimeDisplay>
-          <StyledTimePicker
-            onChange={setStartTime}
-            value={startTime}
-            format="HH:mm"
-            clearIcon={null}
+        <ToggleLabel>
+          <span style={{ marginLeft: '10px' }}>시간 설정 표시</span>
+          <ToggleSwitch
+            type="checkbox"
+            checked={showTime}
+            onChange={handleToggleChange}
           />
-          <Separator>~</Separator>
-          <StyledTimePicker
-            onChange={setEndTime}
-            value={endTime}
-            format="HH:mm"
-            clearIcon={null}
-          />
-        </TimeDisplay>
+        </ToggleLabel>
+        {showTime && (
+          <TimeDisplay>
+            <StyledTimePicker
+              onChange={setStartTime}
+              value={startTime}
+              format="HH:mm"
+              clearIcon={null}
+            />
+            <Separator>~</Separator>
+            <StyledTimePicker
+              onChange={setEndTime}
+              value={endTime}
+              format="HH:mm"
+              clearIcon={null}
+            />
+          </TimeDisplay>
+        )}
       </PlanBottom>
     </PlanContainer>
   );
