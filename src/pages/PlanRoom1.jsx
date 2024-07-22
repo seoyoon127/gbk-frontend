@@ -60,6 +60,19 @@ const StyledCalendar = styled(Calendar)`
   .react-calendar__month-view__weekdays {
     display: none; /* 요일 헤더 숨기기 */
   }
+
+  .react-calendar__month-view__weekdays__weekday {
+    display: none; /* 요일 제목의 스타일을 비우기 */
+  }
+
+  .react-calendar__tile--now {
+    border: 2px solid #4caf50; /* 오늘 날짜 스타일 */
+  }
+
+  .react-calendar__tile--active {
+    background: #45a049; /* 오늘 날짜의 배경 색상 */
+    color: white;
+  }
 `
 const DateDisplay = styled.div`
   margin-top: 20px;
